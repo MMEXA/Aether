@@ -1,10 +1,36 @@
 use super::{AppState, GatewayError, LocalMutationOutcome, LocalProviderDeleteTaskState};
 use crate::handlers::shared::sync_provider_key_oauth_status_snapshot;
 use aether_data_contracts::repository::{candidates, global_models, pool_scores, provider_catalog};
+use std::collections::BTreeSet;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tracing::warn;
 
+pub(crate) const PROVIDER_MODEL_QUERY_CACHE_KEY_PREFIX: &str = "upstream_models_provider:";
+
 impl AppState {
+    async fn invalidate_provider_model_query_caches(&self, provider_ids: &[String]) {
+        let cache_keys = provider_ids
+            .iter()
+            .filter_map(|provider_id| {
+                let provider_id = provider_id.trim();
+                (!provider_id.is_empty())
+                    .then(|| format!("{PROVIDER_MODEL_QUERY_CACHE_KEY_PREFIX}{provider_id}"))
+            })
+            .collect::<BTreeSet<_>>()
+            .into_iter()
+            .collect::<Vec<_>>();
+        if cache_keys.is_empty() {
+            return;
+        }
+        if let Err(err) = self.runtime_state().kv_delete_many(&cache_keys).await {
+            warn!(
+                provider_count = cache_keys.len(),
+                error = ?err,
+                "gateway provider catalog mutation: failed to invalidate provider model query caches"
+            );
+        }
+    }
+
     pub fn has_provider_catalog_data_reader(&self) -> bool {
         self.data.has_provider_catalog_reader()
     }
@@ -658,6 +684,35 @@ impl AppState {
             .map_err(|err| GatewayError::Internal(err.to_string()))?;
         if updated.is_some() {
             self.invalidate_provider_routing_caches();
+        }
+        if let Some(updated_key) = updated.as_ref() {
+            self.invalidate_provider_model_query_caches(std::slice::from_ref(
+                &updated_key.provider_id,
+            ))
+            .await;
+        }
+        Ok(updated)
+    }
+
+    pub(crate) async fn update_provider_catalog_keys(
+        &self,
+        keys: &[provider_catalog::StoredProviderCatalogKey],
+    ) -> Result<Option<Vec<provider_catalog::StoredProviderCatalogKey>>, GatewayError> {
+        let updated = self
+            .data
+            .update_provider_catalog_keys(keys)
+            .await
+            .map_err(|err| GatewayError::Internal(err.to_string()))?;
+        if updated.as_ref().is_some_and(|keys| !keys.is_empty()) {
+            self.invalidate_provider_routing_caches();
+        }
+        if let Some(updated_keys) = updated.as_ref() {
+            let provider_ids = updated_keys
+                .iter()
+                .map(|key| key.provider_id.clone())
+                .collect::<Vec<_>>();
+            self.invalidate_provider_model_query_caches(&provider_ids)
+                .await;
         }
         Ok(updated)
     }

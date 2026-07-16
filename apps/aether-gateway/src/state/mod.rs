@@ -36,6 +36,7 @@ pub(crate) use self::cache::{
     AUTH_API_KEY_LAST_USED_TTL, PROVIDER_TRANSPORT_SNAPSHOT_CACHE_MAX_ENTRIES,
     PROVIDER_TRANSPORT_SNAPSHOT_CACHE_STALE_TTL, PROVIDER_TRANSPORT_SNAPSHOT_CACHE_TTL,
 };
+pub(crate) use self::catalog::PROVIDER_MODEL_QUERY_CACHE_KEY_PREFIX;
 pub use self::cors::FrontdoorCorsConfig;
 pub(crate) use self::types::{
     AdminWalletMutationOutcome, GatewayAdminPaymentCallbackView, GatewayUserPreferenceView,
