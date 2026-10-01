@@ -1,3 +1,26 @@
+# Iridescent 前端运行时基线（更新于 2026-10-01）
+
+## 当前有效基线
+
+- 官方后端基线：`fawney19/Aether` 的 `54fbcc25a171b26966131398ec7c8e462a274348`。
+- Codex 通用协议：稳定版 `0.159.3`；同时核查官方 main `444da310e108da16aaeb18fd790b0ac464f08aca`。
+- 开发源码：`/home/ubuntu/workspace/codex/repos/Aether-live-alignment`，分支 `codex/live-cli-iridescent-20261001`。
+- 正式发布副本：`/home/ubuntu/workspace/deploy/edge-stack/aether/source`；前端位于该目录的 `frontend`。
+- 视觉定制保留虹之彼方、长夜副标题、青色图标及 LXGW 字体；认证采用最新内存访问令牌、跨标签页刷新协调和安全内部跳转，本地 Iridescent 事件及持久化键延续。
+- 前端验收：226 个测试文件、1748 项测试通过，类型检查和生产构建退出码均为 0。
+- 发布范围：仅更新 app；数据库先在隔离库预演迁移，不重建 PostgreSQL/Redis，不修改 Caddy。
+- 正式镜像：`aether-app:live-codex01593-iridescent-20261001`，镜像摘要 `sha256:66c881d48aa4c30d799b9e9f0fa22690ddd9ed18787746c687a41589af50b8f7`；正式 `aether-app` 健康，`/health` 返回 200。
+- 官方通用协议 PR：[fawney19/Aether #876](https://github.com/fawney19/Aether/pull/876)，中文书写；本地视觉定制不进入该 PR。
+- 14 项新增数据库迁移已经隔离库预演及正式执行，迁移记录由 54 增至 68，schema/backfills 均 ready；PostgreSQL 与 Redis 容器保持原 ID 和启动时间。
+- 正式浏览器验收：桌面和手机首页保留品牌、字体及视觉内容，无横向溢出；管理员登录与重载恢复会话成功，未在 localStorage/sessionStorage 保存 access_token。提供商页可见 GPT PRO，模型页可见两个目标模型，相关 API 和浏览器脚本错误为 0。
+- 通过正式全局模型、提供商模型和密钥限制 API，为 Codex 类型 GPT PRO 配置 `gpt-6-astra`、`gpt-6.1-sol`；自动发现继续开启，两模型同时进入 allowed/locked 列表，未修改模型列表处理器或直接写数据库。模型价格未配置，不代表官方免费。
+- 两模型 Responses 的 low/medium/high/xhigh/max 均成功完成；校验发行摘要后的官方 CLI 0.159.3 使用 low 和 ultra 均成功。ultra 是 CLI 本地多代理档位，现场普通请求实际为模型指定的 xhigh，原始 API 直接发送 ultra 会被上游 HTTP 400 拒绝并按重试策略最终返回 503。
+- 两模型各完成两轮 WebSocket generate=false 预热与 previous_response_id 续接；验证后 GPT PRO 的 WebSocket 开关恢复原来的 false。本次覆盖连接、元数据及续接，不等同于完整生成或所有重连场景。
+
+## 2026-08-31 历史记录
+
+以下内容保留当时的路径、镜像和检查结果，用于说明视觉定制来源；当前操作以本节上方的有效基线为准。
+
 # Iridescent 前端 strict-upstream 运行时最小差异基线（更新于 2026-08-31）
 
 ## 一句结论
