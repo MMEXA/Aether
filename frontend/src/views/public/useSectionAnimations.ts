@@ -157,8 +157,8 @@ export function useLogoPosition(
     let opacity = 1
 
     if (section === SECTIONS.HOME) {
-      transform = 'scale(1.1) translateY(-12vh)'
-      opacity = 0.25
+      transform = 'translateX(-9px) scale(1.1) translateY(-12vh)'
+      opacity = 1
     } else if (section === SECTIONS.CLAUDE) {
       // Mobile: move logo higher and reduce opacity to avoid blocking content
       transform = isDesktop ? 'translateX(-25vw) scale(1)' : 'translateY(-32vh) scale(0.6)'
@@ -169,6 +169,9 @@ export function useLogoPosition(
     } else if (section === SECTIONS.GEMINI) {
       transform = isDesktop ? 'translateX(-25vw) scale(1)' : 'translateY(-32vh) scale(0.6)'
       opacity = isDesktop ? 1 : 0.2
+    } else if (section === SECTIONS.FEATURES) {
+      transform = isDesktop ? 'translateX(-9px) scale(1)' : 'translateY(-20vh) scale(0.8)'
+      opacity = 1
     } else {
       transform = isDesktop ? 'translateX(0) scale(1)' : 'translateY(-20vh) scale(0.8)'
       opacity = 0.15

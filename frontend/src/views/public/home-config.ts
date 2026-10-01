@@ -1,5 +1,5 @@
 import { computed, type Ref } from 'vue'
-import { Layers, Puzzle, Users } from 'lucide-vue-next'
+import { Layers, Puzzle, Satellite } from 'lucide-vue-next'
 
 // Section index constants
 export const SECTIONS = {
@@ -25,8 +25,8 @@ export const sections = [
 export const featureCards = [
   {
     icon: Layers,
-    titleKey: 'site.home.feature.cards.multi',
-    descKey: 'site.home.feature.cards.multiDesc',
+    title: '各家标准接口',
+    desc: '已完整接入标准 API',
     status: 'completed' as const
   },
   {
@@ -36,9 +36,9 @@ export const featureCards = [
     status: 'completed' as const
   },
   {
-    icon: Users,
-    titleKey: 'site.home.feature.cards.collaboration',
-    descKey: 'site.home.feature.cards.collaborationDesc',
+    icon: Satellite,
+    title: '虹云接管',
+    desc: '危机时刻 召唤那旧世界的末日',
     status: 'in-progress' as const
   }
 ] as const
@@ -52,13 +52,13 @@ export function useCliConfigs(baseUrl: Ref<string>) {
   }
 }`)
 
-  const codexConfig = computed(() => `model_provider = "aether"
+  const codexConfig = computed(() => `model_provider = "iridescent"
 model = "latest-model-name"
 model_reasoning_effort = "high"
 network_access = "enabled"
 disable_response_storage = true
 
-[model_providers.aether]
+[model_providers.iridescent]
 name = "OpenAI"
 base_url = "${baseUrl.value}/v1"
 wire_api = "responses"
@@ -108,12 +108,12 @@ export const panelClasses = {
 } as const
 
 // Logo type mapping
-export function getLogoType(section: number): 'claude' | 'openai' | 'gemini' | 'aether' {
+export function getLogoType(section: number): 'claude' | 'openai' | 'gemini' | 'iridescent' {
   switch (section) {
     case SECTIONS.CLAUDE: return 'claude'
     case SECTIONS.CODEX: return 'openai'
     case SECTIONS.GEMINI: return 'gemini'
-    default: return 'aether'
+    default: return 'iridescent'
   }
 }
 

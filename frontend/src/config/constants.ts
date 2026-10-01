@@ -2,11 +2,13 @@
  * 应用全局常量配置
  */
 
+import { DEFAULT_SITE_INFO } from './siteBrand'
+
 // 应用配置
 export const APP_CONFIG = {
-  NAME: 'Aether',
+  NAME: DEFAULT_SITE_INFO.siteName,
   VERSION: '9.1.0',
-  DESCRIPTION: 'Claude API 代理服务管理平台',
+  DESCRIPTION: DEFAULT_SITE_INFO.siteSubtitle,
 } as const
 
 // 网络配置

@@ -9,7 +9,7 @@ import { cache } from '@/utils/cache'
 
 // 在开发环境下使用代理,生产环境使用环境变量
 const API_BASE_URL = import.meta.env.VITE_API_URL || ''
-export const AUTH_STATE_CHANGE_EVENT = 'aether-auth-state-change'
+export const AUTH_STATE_CHANGE_EVENT = 'iridescent-auth-state-change'
 export const AUTH_SESSION_SIGNAL_KEY = 'aether_auth_session_signal'
 
 export type AuthStateChangeDetail = {

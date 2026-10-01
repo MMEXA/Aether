@@ -1,0 +1,46 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 554 586" style="background: transparent;">
+  <style>
+    :root {
+      color-scheme: light dark;
+      /* LIGHT MODE */
+      --frame-fill: #d4d4d8;
+      --stripe-fill: #71717a;
+      --text-fill: #27272a;
+      --trace-color: #a1a1aa;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* DARK MODE */
+        --frame-fill: #ffffff;
+        --stripe-fill: #ffffff;
+        --text-fill: #ffffff;
+        --trace-color: #ffffff;
+      }
+    }
+
+    .path-frame { fill: var(--frame-fill); }
+    .path-stripe { fill: var(--stripe-fill); }
+    .path-text { fill: var(--text-fill); }
+    /* 静态 Logo：绝对素雅标准照，没有任何阴影和高光滤镜 */
+    .cyan-accent {
+      fill: #00f0ff;
+    }
+  </style>
+  <g class="fills">
+    <path class="path-frame" d="M 261,4 L 81,4 L 4,81 L 4,277 L 44,277 L 44,101 L 101,44 L 261,44 Z" />
+    <path class="path-frame" d="M 4,309 L 4,505 L 81,582 L 261,582 L 261,542 L 101,542 L 44,485 L 44,309 Z" />
+    <path class="path-frame" d="M 293,4 L 473,4 L 550,81 L 550,277 L 510,277 L 510,101 L 453,44 L 293,44 Z" />
+    <path class="path-frame" d="M 550,309 L 550,505 L 473,582 L 293,582 L 293,542 L 453,542 L 510,485 L 510,309 Z" />
+    <path class="path-stripe" d="M 144,264 L 144,296 L 220,372 L 144,372 L 144,396 L 276,396 Z" />
+    <path class="path-stripe" d="M 144,188 L 144,220 L 320,396 L 352,396 Z" />
+    <path class="path-stripe" d="M 144,128 L 160,128 L 412,380 L 412,396 L 396,396 L 144,144 Z" />
+    <path class="path-stripe" d="M 204,128 L 236,128 L 412,304 L 412,336 Z" />
+    <path class="cyan-accent" d="M 280,128 L 412,128 L 412,152 L 336,152 L 412,228 L 412,260 Z" />
+    <path class="path-text" d="M 148.5,420 L 148.5,458 L 154.5,464 L 184.5,464 L 190.5,458 L 190.5,420 L 178.5,420 L 178.5,450 L 176.5,452 L 162.5,452 L 160.5,450 L 160.5,420 Z" />
+    <path class="path-text" d="M 204.5,420 L 204.5,464 L 216.5,464 L 216.5,440 L 237.5,464 L 249.5,464 L 249.5,420 L 237.5,420 L 237.5,444 L 216.5,420 Z" />
+    <path class="path-text" d="M 267.5,420 L 261.5,426 L 261.5,458 L 267.5,464 L 297.5,464 L 303.5,458 L 303.5,440 L 283.5,440 L 283.5,448 L 291.5,448 L 291.5,450 L 289.5,452 L 275.5,452 L 273.5,450 L 273.5,434 L 275.5,432 L 289.5,432 L 291.5,434 L 291.5,436 L 303.5,436 L 303.5,426 L 297.5,420 Z" />
+    <path class="path-text" d="M 317.5,420 L 317.5,464 L 351.5,464 L 351.5,452 L 329.5,452 L 329.5,420 Z" />
+    <path class="path-text" d="M 369.5,420 L 363.5,426 L 363.5,458 L 369.5,464 L 399.5,464 L 405.5,458 L 405.5,448 L 393.5,448 L 393.5,450 L 391.5,452 L 377.5,452 L 375.5,450 L 375.5,434 L 377.5,432 L 391.5,432 L 393.5,434 L 393.5,436 L 405.5,436 L 405.5,426 L 399.5,420 Z" />
+  </g>
+</svg>

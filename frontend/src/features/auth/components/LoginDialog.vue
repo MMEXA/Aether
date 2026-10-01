@@ -4,14 +4,17 @@
     size="md"
     no-padding
   >
-    <div class="px-6 py-6 sm:px-8 sm:py-8">
+    <div
+      data-login-dialog-surface="true"
+      class="px-6 py-6 sm:px-8 sm:py-8"
+    >
       <!-- Logo 和标题 -->
       <div class="flex flex-col items-center text-center mb-8">
-        <img
-          src="/aether_adaptive.svg"
-          :alt="siteName"
-          class="h-16 w-16 mb-4"
-        >
+        <IridescentStaticAssetLogo
+          container-class="h-16 w-16 mb-4"
+          object-class="h-full w-full"
+          :label="siteName"
+        />
         <h2 class="text-2xl font-semibold text-foreground">
           {{ t('auth.login.title', { siteName }) }}
         </h2>
@@ -32,7 +35,7 @@
             @click="fillDemoAccount('admin')"
           >
             <span class="inline-flex items-center justify-center w-4 h-4 rounded bg-primary/20 text-primary text-[10px] font-bold">A</span>
-            <span>admin@demo.aether.io / demo123</span>
+            <span>admin@demo.iridescent.io / demo123</span>
           </button>
           <button
             type="button"
@@ -40,7 +43,7 @@
             @click="fillDemoAccount('user')"
           >
             <span class="inline-flex items-center justify-center w-4 h-4 rounded bg-muted text-muted-foreground text-[10px] font-bold">U</span>
-            <span>user@demo.aether.io / demo123</span>
+            <span>user@demo.iridescent.io / demo123</span>
           </button>
         </div>
       </div>
@@ -165,9 +168,10 @@
               {{ t('auth.login.backToLdap') }}
             </button>
           </div>
-          <Input
+          <input
             id="username"
             v-model="form.email"
+            class="flex h-11 w-full rounded-xl border border-border/60 bg-muted/50 px-4 py-2 text-sm text-foreground ring-offset-background transition-all placeholder:text-muted-foreground focus-visible:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
             type="text"
             name="username"
             required
@@ -175,7 +179,6 @@
             autocomplete="username"
             autocapitalize="none"
             spellcheck="false"
-            :disable-autofill="false"
           />
         </div>
 
@@ -248,12 +251,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Dialog } from '@/components/ui'
+import { Dialog, Input } from '@/components/ui'
 import Button from '@/components/ui/button.vue'
-import Input from '@/components/ui/input.vue'
 import Label from '@/components/ui/label.vue'
+import IridescentStaticAssetLogo from '@/components/IridescentStaticAssetLogo.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from '@/composables/useToast'
 import { useSiteInfo } from '@/composables/useSiteInfo'
@@ -265,9 +268,15 @@ import { oauthApi, type OAuthProviderInfo } from '@/api/oauth'
 import { getClientDeviceId } from '@/utils/deviceId'
 import { getApiUrl } from '@/utils/url'
 import { getOAuthIcon } from '@/utils/oauth-icons'
+import { LOGIN_DIALOG_SURFACE_ATTR, isOutsideMarkedSurfaceClick } from '@/features/auth/utils/dialogOutsideClick'
 import { navigateAfterLogin } from '@/features/auth/utils/loginRedirect'
 import { useI18n } from '@/i18n'
 import { safeInternalNavigationPath } from '@/utils/navigationSecurity'
+import {
+  getStoredPreferredAuthType,
+  setStoredPreferredAuthType,
+  type PreferredAuthType,
+} from '@/features/auth/utils/preferredAuthTypeStorage'
 
 const props = defineProps<{
   modelValue: boolean
@@ -301,12 +310,7 @@ const privacyPolicy = ref<RegistrationPrivacyPolicySettings>({
 })
 
 // LDAP authentication settings
-const PREFERRED_AUTH_TYPE_KEY = 'aether_preferred_auth_type'
-function getStoredAuthType(): 'local' | 'ldap' {
-  const stored = localStorage.getItem(PREFERRED_AUTH_TYPE_KEY)
-  return (stored === 'ldap' || stored === 'local') ? stored : 'local'
-}
-const authType = ref<'local' | 'ldap'>(getStoredAuthType())
+const authType = ref<PreferredAuthType>(getStoredPreferredAuthType())
 const localEnabled = ref(true)
 const ldapEnabled = ref(false)
 const ldapExclusive = ref(false)
@@ -316,7 +320,7 @@ const loginFormEl = ref<HTMLFormElement | null>(null)
 
 // 保存用户的认证类型偏好
 watch(authType, (newType) => {
-  localStorage.setItem(PREFERRED_AUTH_TYPE_KEY, newType)
+  setStoredPreferredAuthType(newType)
 })
 
 const showAuthTypeTabs = computed(() => {
@@ -341,6 +345,13 @@ watch(() => props.modelValue, (val) => {
 watch(isOpen, (val) => {
   emit('update:modelValue', val)
 })
+
+function handleDocumentClick(event: MouseEvent) {
+  if (!isOpen.value) return
+  if (isOutsideMarkedSurfaceClick(event, LOGIN_DIALOG_SURFACE_ATTR)) {
+    isOpen.value = false
+  }
+}
 
 const form = ref({
   email: '',
@@ -381,15 +392,19 @@ function readCurrentLoginCredentials(event?: Event): { email: string; password: 
     ? event.currentTarget
     : loginFormEl.value
 
-  const emailInput = formElement?.elements.namedItem('username')
-  const passwordInput = formElement?.elements.namedItem('password')
+  if (!formElement) {
+    throw new Error('登录表单不存在，无法读取账号密码')
+  }
 
-  const email = emailInput instanceof HTMLInputElement
-    ? emailInput.value.trim()
-    : form.value.email.trim()
-  const password = passwordInput instanceof HTMLInputElement
-    ? passwordInput.value
-    : form.value.password
+  const emailInput = formElement.elements.namedItem('username')
+  const passwordInput = formElement.elements.namedItem('password')
+
+  if (!(emailInput instanceof HTMLInputElement) || !(passwordInput instanceof HTMLInputElement)) {
+    throw new Error('登录表单缺少账号或密码输入框')
+  }
+
+  const email = emailInput.value.trim()
+  const password = passwordInput.value
 
   form.value.email = email
   form.value.password = password
@@ -435,6 +450,7 @@ function handleSwitchToLogin() {
 
 // Load authentication and registration settings on mount
 onMounted(async () => {
+  document.addEventListener('click', handleDocumentClick, true)
   try {
     const [regSettings, authSettings, providers] = await Promise.all([
       authApi.getRegistrationSettings(),
@@ -463,12 +479,10 @@ onMounted(async () => {
       allowRegistration.value = false
     }
 
-    // Set default auth type based on settings
-    if (authSettings.ldap_exclusive) {
+    // 强制单一认证方式时覆盖偏好；本地与 LDAP 同时可用时保留用户已迁移的选择。
+    if (authSettings.ldap_exclusive || (!authSettings.local_enabled && authSettings.ldap_enabled)) {
       authType.value = 'ldap'
-    } else if (!authSettings.local_enabled && authSettings.ldap_enabled) {
-      authType.value = 'ldap'
-    } else {
+    } else if (!authSettings.ldap_enabled) {
       authType.value = 'local'
     }
 
@@ -497,6 +511,10 @@ onMounted(async () => {
     authType.value = 'local'
     oauthProviders.value = []
   }
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleDocumentClick, true)
 })
 </script>
 

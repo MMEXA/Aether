@@ -1,4 +1,5 @@
-const DEVICE_ID_KEY = 'aether_client_device_id'
+const IRIDESCENT_DEVICE_ID_KEY = 'iridescent_client_device_id'
+const LEGACY_DEVICE_ID_KEY = 'aether_client_device_id'
 
 function generateDeviceId(): string {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -8,12 +9,19 @@ function generateDeviceId(): string {
 }
 
 export function getClientDeviceId(): string {
-  const existing = localStorage.getItem(DEVICE_ID_KEY)
+  const existing = localStorage.getItem(IRIDESCENT_DEVICE_ID_KEY)
   if (existing) {
     return existing
   }
 
+  const legacy = localStorage.getItem(LEGACY_DEVICE_ID_KEY)
+  if (legacy) {
+    localStorage.setItem(IRIDESCENT_DEVICE_ID_KEY, legacy)
+    localStorage.removeItem(LEGACY_DEVICE_ID_KEY)
+    return legacy
+  }
+
   const created = generateDeviceId()
-  localStorage.setItem(DEVICE_ID_KEY, created)
+  localStorage.setItem(IRIDESCENT_DEVICE_ID_KEY, created)
   return created
 }

@@ -9,6 +9,10 @@ import apiClient, {
 import { cache, cachedRequest } from '@/utils/cache'
 
 describe('apiClient auth state change event', () => {
+  it('uses the iridescent auth event name instead of the legacy aether name', () => {
+    expect(AUTH_STATE_CHANGE_EVENT).toBe('iridescent-auth-state-change')
+  })
+
   beforeEach(() => {
     localStorage.clear()
     apiClient.clearAuth()

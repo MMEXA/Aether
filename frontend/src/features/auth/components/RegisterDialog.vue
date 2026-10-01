@@ -7,11 +7,11 @@
       <!-- Logo 和标题 -->
       <div class="flex flex-col items-center text-center">
         <div class="mb-4 rounded-3xl border border-primary/30 dark:border-[#cc785c]/30 bg-primary/5 dark:bg-transparent p-4 shadow-inner shadow-white/40 dark:shadow-[#cc785c]/10">
-          <img
-            src="/aether_adaptive.svg"
-            alt="Logo"
-            class="h-16 w-16"
-          >
+          <IridescentStaticAssetLogo
+            container-class="h-16 w-16"
+            object-class="h-full w-full"
+            :label="`${DEFAULT_SITE_INFO.siteName} logo`"
+          />
         </div>
         <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">
           {{ registerUi.title }}
@@ -330,24 +330,9 @@ import Button from '@/components/ui/button.vue'
 import Checkbox from '@/components/ui/checkbox.vue'
 import Input from '@/components/ui/input.vue'
 import Label from '@/components/ui/label.vue'
+import IridescentStaticAssetLogo from '@/components/IridescentStaticAssetLogo.vue'
+import { DEFAULT_SITE_INFO } from '@/config/siteBrand'
 import TurnstileWidget from './TurnstileWidget.vue'
-
-const props = withDefaults(defineProps<Props>(), {
-  open: false,
-  requireEmailVerification: false,
-  emailConfigured: true,
-  passwordPolicyLevel: 'weak',
-  turnstileEnabled: false,
-  turnstileSiteKey: null,
-  privacyPolicy: () => ({
-    enabled: false,
-    format: 'markdown',
-    content: '',
-    version: ''
-  })
-})
-
-const emit = defineEmits<Emits>()
 
 const INVITE_CODE_STORAGE_KEY = 'aether_invite_code'
 
@@ -367,6 +352,22 @@ interface Emits {
   (e: 'switchToLogin'): void
 }
 
+const props = withDefaults(defineProps<Props>(), {
+  open: false,
+  requireEmailVerification: false,
+  emailConfigured: true,
+  passwordPolicyLevel: 'weak',
+  turnstileEnabled: false,
+  turnstileSiteKey: null,
+  privacyPolicy: () => ({
+    enabled: false,
+    format: 'markdown',
+    content: '',
+    version: ''
+  })
+})
+
+const emit = defineEmits<Emits>()
 const { success, error: showError } = useToast()
 const { t } = useI18n()
 

@@ -158,8 +158,8 @@ describe('RegisterDialog Turnstile flow', () => {
     mounted = null
     document.body.innerHTML = ''
     delete (window as unknown as { turnstile?: TurnstileMock }).turnstile
-    delete (window as unknown as { __aetherTurnstileScriptPromise?: Promise<void> })
-      .__aetherTurnstileScriptPromise
+    delete (window as unknown as { __iridescentTurnstileScriptPromise?: Promise<void> })
+      .__iridescentTurnstileScriptPromise
   })
 
   it('gets a Turnstile token before submitting registration', async () => {

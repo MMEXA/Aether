@@ -30,6 +30,8 @@ RUN npm run build
 
 # ==================== Rust gateway 构建 ====================
 FROM ${RUST_BASE_IMAGE} AS gateway-base
+ARG CARGO_BUILD_JOBS=1
+ENV CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS}
 WORKDIR /build
 
 # 生产级 release 构建：保留 thin LTO，同时用 lld 缩短最终链接阶段。

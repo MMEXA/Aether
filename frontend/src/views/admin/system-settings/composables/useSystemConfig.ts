@@ -3,6 +3,7 @@ import { useToast } from '@/composables/useToast'
 import { adminApi } from '@/api/admin'
 import { log } from '@/utils/logger'
 import { useSiteInfo } from '@/composables/useSiteInfo'
+import { DEFAULT_SITE_INFO } from '@/config/siteBrand'
 
 export interface SystemConfig {
   // 站点信息
@@ -108,8 +109,8 @@ const CONFIG_KEYS = [
 function createDefaultConfig(): SystemConfig {
   return {
     // 站点信息
-    site_name: 'Aether',
-    site_subtitle: 'AI Gateway',
+    site_name: DEFAULT_SITE_INFO.siteName,
+    site_subtitle: DEFAULT_SITE_INFO.siteSubtitle,
     // 网络代理
     system_proxy_node_id: null,
     // 基础配置

@@ -792,10 +792,10 @@ function generateMockUsageRecords(count: number = 100) {
   ]
 
   const users = [
-    { id: 'demo-admin-uuid-0001', username: 'Demo Admin', email: 'admin@demo.aether.ai' },
-    { id: 'demo-user-uuid-0002', username: 'Demo User', email: 'user@demo.aether.ai' },
-    { id: 'demo-user-uuid-0003', username: 'Alice Chen', email: 'alice@demo.aether.ai' },
-    { id: 'demo-user-uuid-0004', username: 'Bob Zhang', email: 'bob@demo.aether.ai' }
+    { id: 'demo-admin-uuid-0001', username: 'Demo Admin', email: 'admin@demo.iridescent.ai' },
+    { id: 'demo-user-uuid-0002', username: 'Demo User', email: 'user@demo.iridescent.ai' },
+    { id: 'demo-user-uuid-0003', username: 'Alice Chen', email: 'alice@demo.iridescent.ai' },
+    { id: 'demo-user-uuid-0004', username: 'Bob Zhang', email: 'bob@demo.iridescent.ai' }
   ]
 
   const apiFormats = ['claude:messages', 'openai:chat', 'openai:responses', 'gemini:generate_content']
@@ -4017,10 +4017,10 @@ registerDynamicRoute('GET', '/api/admin/usage/:requestId', async (config, params
 
   // 生成详细的请求信息
   const users = [
-    { id: 'demo-admin-uuid-0001', username: 'Demo Admin', email: 'admin@demo.aether.ai' },
-    { id: 'demo-user-uuid-0002', username: 'Demo User', email: 'user@demo.aether.ai' },
-    { id: 'demo-user-uuid-0003', username: 'Alice Chen', email: 'alice@demo.aether.ai' },
-    { id: 'demo-user-uuid-0004', username: 'Bob Zhang', email: 'bob@demo.aether.ai' }
+    { id: 'demo-admin-uuid-0001', username: 'Demo Admin', email: 'admin@demo.iridescent.ai' },
+    { id: 'demo-user-uuid-0002', username: 'Demo User', email: 'user@demo.iridescent.ai' },
+    { id: 'demo-user-uuid-0003', username: 'Alice Chen', email: 'alice@demo.iridescent.ai' },
+    { id: 'demo-user-uuid-0004', username: 'Bob Zhang', email: 'bob@demo.iridescent.ai' }
   ]
   const user = users.find(u => u.id === record.user_id) || users[0]
 
@@ -4563,10 +4563,10 @@ mockHandlers['GET /api/admin/usage/cache-affinity/interval-timeline'] = async (c
 // 生成 TTL 分析数据
 function generateTTLAnalysisData(hours: number = 168) {
   const users = [
-    { id: 'demo-admin-uuid-0001', username: 'Demo Admin', email: 'admin@demo.aether.io' },
-    { id: 'demo-user-uuid-0002', username: 'Demo User', email: 'user@demo.aether.io' },
-    { id: 'demo-user-uuid-0003', username: 'Alice Chen', email: 'alice@demo.aether.io' },
-    { id: 'demo-user-uuid-0004', username: 'Bob Zhang', email: 'bob@demo.aether.io' }
+    { id: 'demo-admin-uuid-0001', username: 'Demo Admin', email: 'admin@demo.iridescent.io' },
+    { id: 'demo-user-uuid-0002', username: 'Demo User', email: 'user@demo.iridescent.io' },
+    { id: 'demo-user-uuid-0003', username: 'Alice Chen', email: 'alice@demo.iridescent.io' },
+    { id: 'demo-user-uuid-0004', username: 'Bob Zhang', email: 'bob@demo.iridescent.io' }
   ]
 
   const usersAnalysis = users.map(user => {

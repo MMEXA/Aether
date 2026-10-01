@@ -61,7 +61,7 @@ describe('useSiteInfo', () => {
     expect(document.title).toBe('Configured Aether')
   })
 
-  it('uses upstream defaults only after public site info fails', async () => {
+  it('uses MMEXAB defaults only after public site info fails', async () => {
     apiClientMocks.get.mockRejectedValue(new Error('network unavailable'))
 
     const { useSiteInfo } = await import('../useSiteInfo')
@@ -72,9 +72,9 @@ describe('useSiteInfo', () => {
 
     await refreshSiteInfo()
 
-    expect(siteName.value).toBe('Aether')
-    expect(siteSubtitle.value).toBe('AI Gateway')
+    expect(siteName.value).toBe('虹之彼方')
+    expect(siteSubtitle.value).toBe('即便踽然一人 面对无法跨越的长夜')
     expect(siteInfoLoaded.value).toBe(true)
-    expect(document.title).toBe('Aether')
+    expect(document.title).toBe('虹之彼方')
   })
 })

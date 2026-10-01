@@ -24,7 +24,7 @@
           id="site-name"
           :model-value="siteName"
           type="text"
-          placeholder="Aether"
+          :placeholder="DEFAULT_SITE_INFO.siteName"
           class="mt-1"
           @update:model-value="$emit('update:siteName', $event)"
         />
@@ -43,7 +43,7 @@
           id="site-subtitle"
           :model-value="siteSubtitle"
           type="text"
-          placeholder="AI Gateway"
+          :placeholder="DEFAULT_SITE_INFO.siteSubtitle"
           class="mt-1"
           @update:model-value="$emit('update:siteSubtitle', $event)"
         />
@@ -60,6 +60,7 @@ import Button from '@/components/ui/button.vue'
 import Input from '@/components/ui/input.vue'
 import Label from '@/components/ui/label.vue'
 import { CardSection } from '@/components/layout'
+import { DEFAULT_SITE_INFO } from '@/config/siteBrand'
 
 defineProps<{
   siteName: string

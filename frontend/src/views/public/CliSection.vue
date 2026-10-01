@@ -21,7 +21,7 @@
 
         <!-- Title -->
         <h2
-          class="text-4xl md:text-5xl font-bold text-[#191919] dark:text-white mb-6 transition-all duration-700"
+          class="cli-section-title text-4xl md:text-5xl font-bold text-[#191919] dark:text-white mb-6 transition-all duration-700"
           :style="titleStyle"
         >
           {{ title }}
@@ -172,6 +172,12 @@ const logoOrder = computed(() =>
 </script>
 
 <style scoped>
+.cli-section-title {
+  font-family: var(--sans-serif) !important;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
 .config-code-wrapper :deep(.code-highlight pre) {
   border: none;
   border-radius: 0;

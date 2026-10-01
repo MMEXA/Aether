@@ -142,7 +142,7 @@
               id="smtp-from-name"
               v-model="emailConfig.smtp_from_name"
               type="text"
-              placeholder="Aether"
+              :placeholder="DEFAULT_SITE_INFO.siteName"
               class="mt-1"
             />
             <p class="mt-1 text-xs text-muted-foreground">
@@ -488,6 +488,7 @@ import { adminApi, type EmailTemplateInfo } from '@/api/admin'
 import { authApi } from '@/api/auth'
 import { parseApiError } from '@/utils/errorParser'
 import { log } from '@/utils/logger'
+import { DEFAULT_SITE_INFO } from '@/config/siteBrand'
 
 const { success, error } = useToast()
 
@@ -563,7 +564,7 @@ const emailConfig = ref<EmailConfig>({
   smtp_use_tls: true,
   smtp_use_ssl: false,
   smtp_from_email: null,
-  smtp_from_name: 'Aether',
+  smtp_from_name: DEFAULT_SITE_INFO.siteName,
   // 注册邮箱限制
   email_suffix_mode: 'none',
   email_suffix_list: [],

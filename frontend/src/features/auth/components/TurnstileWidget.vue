@@ -58,7 +58,7 @@ interface TurnstileApi {
 declare global {
   interface Window {
     turnstile?: TurnstileApi
-    __aetherTurnstileScriptPromise?: Promise<void>
+    __iridescentTurnstileScriptPromise?: Promise<void>
   }
 }
 
@@ -71,18 +71,18 @@ function loadTurnstileScript(): Promise<void> {
   if (window.turnstile) {
     return Promise.resolve()
   }
-  if (window.__aetherTurnstileScriptPromise) {
-    return window.__aetherTurnstileScriptPromise
+  if (window.__iridescentTurnstileScriptPromise) {
+    return window.__iridescentTurnstileScriptPromise
   }
 
-  window.__aetherTurnstileScriptPromise = new Promise((resolve, reject) => {
+  window.__iridescentTurnstileScriptPromise = new Promise((resolve, reject) => {
     const rejectAndReset = (script: HTMLScriptElement) => {
       script.remove()
-      delete window.__aetherTurnstileScriptPromise
+      delete window.__iridescentTurnstileScriptPromise
       reject(new Error('Turnstile script failed'))
     }
     const existing = document.querySelector<HTMLScriptElement>(
-      'script[data-aether-turnstile="true"]'
+      'script[data-iridescent-turnstile="true"]'
     )
     if (existing) {
       existing.addEventListener('load', () => resolve(), { once: true })
@@ -96,13 +96,13 @@ function loadTurnstileScript(): Promise<void> {
     script.src = TURNSTILE_SCRIPT_URL
     script.async = true
     script.defer = true
-    script.dataset.aetherTurnstile = 'true'
+    script.dataset.iridescentTurnstile = 'true'
     script.onload = () => resolve()
     script.onerror = () => rejectAndReset(script)
     document.head.appendChild(script)
   })
 
-  return window.__aetherTurnstileScriptPromise
+  return window.__iridescentTurnstileScriptPromise
 }
 
 function clearWidget() {

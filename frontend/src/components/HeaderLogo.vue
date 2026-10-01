@@ -1,26 +1,20 @@
 <template>
   <div
-    class="relative group cursor-pointer"
+    class="relative shrink-0"
     :class="containerClass"
   >
-    <!-- Logo SVG -->
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      :viewBox="viewBox"
-      class="transition-colors duration-500 ease-out"
-      :class="[logoClass]"
-    >
-      <path
-        :d="aetherFullPath"
-        fill-rule="evenodd"
-        fill="currentColor"
-      />
-    </svg>
+    <IridescentStaticAssetLogo
+      container-class="w-full h-full"
+      object-class="w-full h-full"
+      :label="`${DEFAULT_SITE_INFO.siteName} logo`"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { AETHER_FULL_PATH, AETHER_SVG_VIEWBOX } from '@/constants/logoPaths'
+import { computed } from 'vue'
+import { DEFAULT_SITE_INFO } from '@/config/siteBrand'
+import IridescentStaticAssetLogo from './IridescentStaticAssetLogo.vue'
 
 interface Props {
   size?: string
@@ -32,11 +26,5 @@ const props = withDefaults(defineProps<Props>(), {
   className: ''
 })
 
-const aetherFullPath = AETHER_FULL_PATH
-const viewBox = AETHER_SVG_VIEWBOX
-const containerClass = `${props.size} ${props.className}`.trim()
-const logoClass = 'w-full h-full'
+const containerClass = computed(() => [props.size, props.className].filter(Boolean).join(' '))
 </script>
-
-<style scoped>
-</style>

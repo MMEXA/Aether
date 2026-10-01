@@ -58,8 +58,8 @@ vi.mock('@/composables/useSiteInfo', () => ({
 vi.mock('@/config/demo', () => ({
   isDemoMode: () => false,
   DEMO_ACCOUNTS: {
-    admin: { email: 'admin@demo.aether.io', password: 'demo123' },
-    user: { email: 'user@demo.aether.io', password: 'demo123' },
+    admin: { email: 'admin@demo.iridescent.io', password: 'demo123' },
+    user: { email: 'user@demo.iridescent.io', password: 'demo123' },
   },
 }))
 
@@ -103,6 +103,24 @@ vi.mock('@/components/ui', async () => {
       emits: ['update:modelValue'],
       setup(props, { slots }) {
         return () => props.modelValue ? h('div', { 'data-testid': 'dialog' }, slots.default?.()) : null
+      },
+    }),
+    Input: defineComponent({
+      name: 'InputStub',
+      inheritAttrs: false,
+      props: {
+        modelValue: { type: [String, Number], default: '' },
+      },
+      emits: ['update:modelValue'],
+      setup(props, { attrs, emit }) {
+        return () => h('input', {
+          ...attrs,
+          value: props.modelValue,
+          onInput: (event: Event) => emit(
+            'update:modelValue',
+            (event.target as HTMLInputElement).value,
+          ),
+        })
       },
     }),
   }

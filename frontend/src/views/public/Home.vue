@@ -1,7 +1,7 @@
 <template>
   <div
     ref="scrollContainer"
-    class="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth literary-grid literary-paper"
+    class="landing-page relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth literary-grid literary-paper"
   >
     <!-- Fixed scroll indicator -->
     <nav class="scroll-indicator">
@@ -58,22 +58,13 @@
           </button>
           <ThemeModeButton size="sm" />
           <LanguageSwitcher />
-          <a
-            href="https://github.com/fawney19/Aether"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition"
-            :title="t('common.githubRepository')"
-          >
-            <GithubIcon class="h-3.5 w-3.5" />
-          </a>
         </div>
       </div>
 
       <!-- Desktop layout (>= md): Centered nav with balanced spacing -->
       <div class="h-16 hidden md:flex items-center justify-between px-8">
         <!-- Left spacer for balance (matches right icons width) -->
-        <div class="w-[76px] shrink-0" />
+        <div class="w-9 shrink-0" />
 
         <!-- Center: Logo + Nav + Login Button -->
         <div class="flex items-center">
@@ -111,12 +102,6 @@
                 :class="currentSection === index ? 'bg-[#cc785c] dark:bg-[#d4a27f] scale-x-100' : 'bg-transparent scale-x-0'"
               />
             </button>
-            <RouterLink
-              to="/guide"
-              class="group relative px-3 py-2 text-sm font-medium transition whitespace-nowrap text-[#666663] dark:text-muted-foreground hover:text-[#191919] dark:hover:text-white"
-            >
-              {{ t('site.home.docLink') }}
-            </RouterLink>
             <button
               class="group relative px-3 py-2 text-sm font-medium transition whitespace-nowrap"
               :class="currentSection === SECTIONS.FEATURES
@@ -149,19 +134,10 @@
           </button>
         </div>
 
-        <!-- Right: Theme Toggle + GitHub Icons -->
+        <!-- Right: Theme Toggle -->
         <div class="flex items-center gap-1 shrink-0">
           <ThemeModeButton />
           <LanguageSwitcher />
-          <a
-            href="https://github.com/fawney19/Aether"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition"
-            :title="t('common.githubRepository')"
-          >
-            <GithubIcon class="h-4 w-4" />
-          </a>
         </div>
       </div>
     </header>
@@ -169,7 +145,10 @@
     <!-- Main Content -->
     <main class="relative z-10">
       <!-- Fixed Logo Container -->
-      <div class="fixed top-0 left-0 right-0 bottom-0 z-20 pointer-events-none flex items-center justify-center overflow-hidden">
+      <div
+        class="fixed top-0 left-0 right-0 bottom-0 pointer-events-none flex items-center justify-center overflow-hidden fixed-logo-layer"
+        :class="currentSection === SECTIONS.FEATURES ? 'fixed-logo-layer-under-content' : 'fixed-logo-layer-front'"
+      >
         <!-- Gemini Star Cluster - positioned behind logo -->
         <Transition name="fade">
           <GeminiStarCluster
@@ -183,25 +162,17 @@
 
         <div
           class="transform-gpu logo-container"
-          :class="[currentSection === SECTIONS.HOME ? 'home-section' : '', `logo-transition-${scrollDirection}`]"
+          :class="[currentSection === SECTIONS.HOME ? 'home-section pointer-events-auto' : 'pointer-events-none', `logo-transition-${scrollDirection}`]"
           :style="fixedLogoStyle"
         >
           <Transition :name="logoTransitionName">
-            <AetherLineByLineLogo
+            <div
               v-if="currentSection === SECTIONS.HOME"
-              ref="aetherLogoRef"
-              key="aether-logo"
-              :size="homeLogoSize"
-              :line-delay="50"
-              :stroke-duration="1200"
-              :fill-duration="1500"
-              :auto-start="false"
-              :loop="true"
-              :loop-pause="800"
-              :stroke-width="windowWidth < 768 ? 2.5 : 3.5"
-              :cycle-colors="true"
-              :is-dark="isDark"
-            />
+              key="iridescent-logo"
+              style="width: 100%; height: 100%;"
+            >
+              <IridescentLogo />
+            </div>
             <div
               v-else
               :key="`ripple-wrapper-${currentLogoType}`"
@@ -216,7 +187,7 @@
                 :anim-delay="logoTransitionDelay"
                 :static="currentSection === SECTIONS.FEATURES"
                 class="logo-active"
-                :class="[currentLogoClass]"
+                :class="[currentLogoClass, currentSection === SECTIONS.FEATURES ? 'landing-feature-static-logo' : '']"
               />
             </div>
           </Transition>
@@ -231,20 +202,21 @@
         <div class="max-w-4xl mx-auto text-center">
           <div class="h-64 sm:h-80 md:h-[26rem] w-full mb-12 sm:mb-8 md:mb-10 mt-8 sm:mt-12" />
           <h1
-            class="mb-6 text-3xl sm:text-5xl md:text-7xl font-bold text-[#191919] dark:text-white leading-tight transition-all duration-700"
+            class="mb-6 font-bold leading-tight tracking-wider transition-all duration-700"
+            style="font-size: clamp(2.25rem, 8vw, 6rem);"
             :style="getTitleStyle(SECTIONS.HOME)"
           >
-            {{ t('site.home.hero.titlePrefix') }} <span class="text-primary typewriter">{{ aetherText }}<span
-              class="cursor"
-              :class="{ 'cursor-hidden': !showCursor }"
-            >_</span></span>
+            <span
+              class="scifi-brand-v4 scifi-title-lockup whitespace-nowrap"
+              :class="{ 'animate-start': hasLogoAnimationStarted }"
+            >天網機房 霧霜基建</span>
           </h1>
           <p
             class="mb-8 text-base sm:text-lg md:text-xl text-[#666663] dark:text-[#c9c3b4] max-w-2xl mx-auto transition-all duration-700"
             :style="getDescStyle(SECTIONS.HOME)"
           >
-            {{ t('site.home.hero.subtitle') }}<br>
-            {{ t('site.home.hero.subtitleLine2') }}
+            来自旧世界的虹云集群<br>
+            闪烁着未熄的流光 将勇气与智慧 赋予新世界的孩子们
           </p>
           <button
             class="mt-8 transition-all duration-700 cursor-pointer hover:scale-110"
@@ -260,8 +232,8 @@
       <CliSection
         ref="section1"
         v-model:platform-value="claudePlatform"
-        :title="t('site.home.cli.claudeTitle')"
-        :description="t('site.home.cli.claudeDescription')"
+        title="Claude Code"
+        description="Claude Code 是一个由 AI 驱动的编码助手，可帮助你构建功能、修复错误和自动化开发任务。它理解你的整个代码库，可以跨多个文件和工具工作以完成任务。"
         :badge-icon="Code2"
         :badge-text="t('site.home.cli.ideIntegration')"
         badge-class="bg-[#cc785c]/10 dark:bg-[#cc785c]/20 border border-[#cc785c]/20 dark:border-[#d4a27f]/30 text-[#cc785c] dark:text-[#d4a27f]"
@@ -280,7 +252,7 @@
       <CliSection
         ref="section2"
         v-model:platform-value="codexPlatform"
-        :title="t('site.home.cli.codexTitle')"
+        title="Codex CLI"
         :description="t('site.home.cli.codexDescription')"
         :badge-icon="Terminal"
         :badge-text="t('site.home.cli.commandLine')"
@@ -303,7 +275,7 @@
       <CliSection
         ref="section3"
         v-model:platform-value="geminiPlatform"
-        :title="t('site.home.cli.geminiTitle')"
+        title="Gemini CLI"
         :description="t('site.home.cli.geminiDescription')"
         :badge-icon="Sparkles"
         :badge-text="t('site.home.cli.multimodalAi')"
@@ -332,36 +304,36 @@
             class="inline-flex items-center gap-1.5 md:gap-2 rounded-full bg-[#cc785c]/10 dark:bg-[#cc785c]/20 border border-[#cc785c]/20 dark:border-[#d4a27f]/30 px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium text-[#cc785c] dark:text-[#d4a27f] mb-4 md:mb-6 backdrop-blur-sm transition-all duration-500"
             :style="getBadgeStyle(SECTIONS.FEATURES)"
           >
-            <Sparkles class="h-3.5 w-3.5 md:h-4 md:w-4" />
-            {{ t('site.home.projectProgress') }}
+            <RectangleGoggles class="h-3.5 w-3.5 md:h-4 md:w-4" />
+            出击就绪
           </div>
 
           <h2
             class="text-2xl md:text-5xl font-bold text-[#191919] dark:text-white mb-3 md:mb-6 transition-all duration-700"
             :style="getTitleStyle(SECTIONS.FEATURES)"
           >
-            {{ t('site.home.featureProgress') }}
+            接入完成
           </h2>
 
           <p
             class="text-base md:text-lg text-[#666663] dark:text-[#c9c3b4] mb-6 md:mb-12 max-w-2xl mx-auto transition-all duration-700"
             :style="getDescStyle(SECTIONS.FEATURES)"
           >
-            {{ t('site.home.featureProgressDesc') }}
+            核心 API 已就绪 可执行接续
           </p>
 
-          <div class="grid md:grid-cols-3 gap-3 md:gap-6">
+          <div class="grid md:grid-cols-3 gap-3 md:gap-6 items-stretch">
             <div
               v-for="(feature, idx) in resolvedFeatureCards"
               :key="idx"
-              class="group bg-white/90 dark:bg-[#262624]/80 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 border transition-all duration-700"
+              class="group h-full bg-white/90 dark:bg-[#262624]/80 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 border transition-all duration-700 flex flex-col items-center text-center"
               :class="feature.status === 'completed'
                 ? 'border-[#cc785c]/20 dark:border-[#d4a27f]/20'
                 : 'border-[#e5e4df] dark:border-[rgba(227,224,211,0.16)] border-dashed'"
               :style="getFeatureCardStyle(SECTIONS.FEATURES, idx)"
             >
               <div
-                class="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-lg md:rounded-xl mb-2 md:mb-4 mx-auto bg-[#cc785c]/8 dark:bg-[#cc785c]/12"
+                class="flex h-10 w-10 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-lg md:rounded-xl mb-2 md:mb-4 mx-auto bg-[#cc785c]/8 dark:bg-[#cc785c]/12"
               >
                 <component
                   :is="feature.icon"
@@ -370,23 +342,35 @@
                 />
               </div>
               <h3
-                class="text-base md:text-lg font-bold mb-1 md:mb-2"
+                class="w-full min-h-[2.75rem] md:min-h-[3.25rem] flex items-center justify-center text-center text-base md:text-lg font-bold mb-1 md:mb-2 leading-tight"
                 :class="feature.status === 'completed'
                   ? 'text-[#191919] dark:text-white'
                   : 'text-[#666663] dark:text-[#a0a0a0]'"
               >
                 {{ feature.title }}
               </h3>
-              <p class="text-xs md:text-sm text-[#666663] dark:text-[#c9c3b4]">
+              <div class="feature-copy-divider" aria-hidden="true">
+                <span class="feature-copy-divider-line" />
+              </div>
+              <p class="w-full flex-1 min-h-[3.5rem] md:min-h-[4.5rem] text-center text-xs md:text-sm leading-relaxed text-[#666663] dark:text-[#c9c3b4]">
                 {{ feature.desc }}
               </p>
               <div
-                class="mt-2 md:mt-3 inline-flex items-center gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-medium border"
+                class="mt-auto inline-flex items-center justify-center gap-1.5 px-2 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-medium border"
                 :class="feature.status === 'completed'
                   ? 'bg-[#cc785c]/5 text-[#cc785c] dark:text-[#d4a27f] border-[#cc785c]/20 dark:border-[#d4a27f]/20'
                   : 'bg-transparent text-[#91918d] dark:text-[#808080] border-[#e5e4df] dark:border-[rgba(227,224,211,0.12)]'"
               >
-                {{ feature.status === 'completed' ? t('site.home.status.completed') : t('site.home.status.inProgress') }}
+                <template v-if="feature.status === 'completed'">
+                  已完成
+                </template>
+                <template v-else>
+                  <Radiation
+                    class="h-3.5 w-3.5"
+                    aria-hidden="true"
+                  />
+                  <span class="sr-only">开发中</span>
+                </template>
               </div>
             </div>
           </div>
@@ -426,13 +410,13 @@ import { RouterLink } from 'vue-router'
 import {
   ChevronDown,
   Code2,
+  Radiation,
+  RectangleGoggles,
   Rocket,
   Sparkles,
   Terminal
 } from 'lucide-vue-next'
-import GithubIcon from '@/components/icons/GithubIcon.vue'
 import { useAuthStore } from '@/stores/auth'
-import { useDarkMode } from '@/composables/useDarkMode'
 import { useClipboard } from '@/composables/useClipboard'
 import { useSiteInfo } from '@/composables/useSiteInfo'
 import LanguageSwitcher from '@/components/common/LanguageSwitcher.vue'
@@ -440,7 +424,7 @@ import ThemeModeButton from '@/components/common/ThemeModeButton.vue'
 import LoginDialog from '@/features/auth/components/LoginDialog.vue'
 import RippleLogo from '@/components/RippleLogo.vue'
 import HeaderLogo from '@/components/HeaderLogo.vue'
-import AetherLineByLineLogo from '@/components/AetherLineByLineLogo.vue'
+import IridescentLogo from '@/components/IridescentLogo.vue'
 import GeminiStarCluster from '@/components/GeminiStarCluster.vue'
 import CliSection from './CliSection.vue'
 import { platformPresets, getInstallCommand } from '@/config/platform-presets'
@@ -460,7 +444,6 @@ import {
 import { useI18n } from '@/i18n'
 
 const authStore = useAuthStore()
-const { isDark } = useDarkMode()
 const { copyToClipboard } = useClipboard()
 const { siteName, siteSubtitle } = useSiteInfo()
 const { t } = useI18n()
@@ -477,8 +460,8 @@ const resolvedSections = computed(() => sections.map(section => ({
 
 const resolvedFeatureCards = computed(() => featureCards.map(card => ({
   ...card,
-  title: t(card.titleKey),
-  desc: t(card.descKey),
+  title: 'titleKey' in card ? t(card.titleKey) : card.title,
+  desc: 'descKey' in card ? t(card.descKey) : card.desc,
 })))
 
 // Scroll state
@@ -510,7 +493,6 @@ const getSectionElement = (index: number): HTMLElement | null => {
 }
 
 // Logo refs
-const aetherLogoRef = ref<InstanceType<typeof AetherLineByLineLogo> | null>(null)
 const rippleLogoRef = ref<InstanceType<typeof RippleLogo> | null>(null)
 const hasLogoAnimationStarted = ref(false)
 const geminiFillComplete = ref(false)
@@ -533,8 +515,6 @@ const { logoTransitionName } = useLogoTransition(currentSection, previousSection
 const currentLogoType = computed(() => getLogoType(currentSection.value))
 const currentLogoClass = computed(() => getLogoClass(currentSection.value))
 
-// Responsive logo size - matches .logo-container.home-section CSS
-const homeLogoSize = computed(() => windowWidth.value < 768 ? 280 : 400)
 const logoTransitionDelay = computed(() => {
   if (currentSection.value === SECTIONS.FEATURES) return 0
   if (previousSection.value === SECTIONS.FEATURES) return 200
@@ -557,58 +537,6 @@ const { claudeConfig, codexConfig, codexAuthConfig, geminiEnvConfig, geminiSetti
 
 // Dialog state
 const showLoginDialog = ref(false)
-
-// Typewriter effect for site name
-const aetherText = ref('')
-const showCursor = ref(true)
-const typewriterFullText = computed(() => siteName.value)
-let typewriterTimer: ReturnType<typeof setTimeout> | null = null
-const hasTypewriterStarted = ref(false)
-
-const startTypewriter = () => {
-  if (hasTypewriterStarted.value) return
-  hasTypewriterStarted.value = true
-  aetherText.value = ''
-  showCursor.value = true
-
-  const typeSpeed = 200
-  const deleteSpeed = 120
-  const pauseAfterType = 3500
-  const pauseAfterDelete = 1000
-
-  const typeLoop = () => {
-    let index = 0
-    const fullText = typewriterFullText.value
-
-    // Type phase
-    const typeNextChar = () => {
-      if (index < fullText.length) {
-        aetherText.value = fullText.slice(0, index + 1)
-        index++
-        typewriterTimer = setTimeout(typeNextChar, typeSpeed)
-      } else {
-        // Pause then start deleting
-        typewriterTimer = setTimeout(deleteChars, pauseAfterType)
-      }
-    }
-
-    // Delete phase
-    const deleteChars = () => {
-      if (aetherText.value.length > 0) {
-        aetherText.value = aetherText.value.slice(0, -1)
-        typewriterTimer = setTimeout(deleteChars, deleteSpeed)
-      } else {
-        // Pause then restart typing
-        typewriterTimer = setTimeout(typeLoop, pauseAfterDelete)
-      }
-    }
-
-    typeNextChar()
-  }
-  
-  // Start typing after a short delay
-  typewriterTimer = setTimeout(typeLoop, 400)
-}
 
 // Scroll handling
 let scrollEndTimer: ReturnType<typeof setTimeout> | null = null
@@ -659,8 +587,6 @@ const handleScroll = () => {
   scrollEndTimer = setTimeout(() => {
     if (currentSection.value === SECTIONS.HOME && !hasLogoAnimationStarted.value) {
       hasLogoAnimationStarted.value = true
-      setTimeout(() => aetherLogoRef.value?.startAnimation(), 100)
-      startTypewriter()
     }
   }, 150)
 }
@@ -695,8 +621,6 @@ onMounted(() => {
   setTimeout(() => {
     if (currentSection.value === SECTIONS.HOME && !hasLogoAnimationStarted.value) {
       hasLogoAnimationStarted.value = true
-      setTimeout(() => aetherLogoRef.value?.startAnimation(), 100)
-      startTypewriter()
     }
   }, 300)
 })
@@ -705,21 +629,25 @@ onUnmounted(() => {
   scrollContainer.value?.removeEventListener('scroll', handleScroll)
   window.removeEventListener('resize', handleResize)
   if (scrollEndTimer) clearTimeout(scrollEndTimer)
-  if (typewriterTimer) clearTimeout(typewriterTimer)
 })
 </script>
 
 <style scoped>
+.landing-page {
+  --serif: 'LXGWWenKai', 'STZhongsong', 'Fang Song', serif;
+  --font-serif: var(--serif);
+}
+
 /* Typography */
 h1, h2, h3 {
   font-family: var(--serif);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   font-weight: 500;
 }
 
 p {
   font-family: var(--serif);
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
   line-height: 1.7;
 }
 
@@ -888,6 +816,20 @@ h1, h2, p {
   justify-content: center;
 }
 
+.fixed-logo-layer-front {
+  z-index: 20;
+}
+
+.fixed-logo-layer-under-content {
+  z-index: 0;
+}
+
+.landing-feature-static-logo {
+  opacity: 0.28;
+  transform: scale(2);
+  transform-origin: center center;
+}
+
 @media (max-width: 768px) {
   .logo-container {
     width: 240px;
@@ -932,25 +874,82 @@ h1, h2, p {
   opacity: 0;
 }
 
-/* Typewriter cursor */
-.typewriter {
-  display: inline;
+@font-face {
+  font-family: 'TypeFont';
+  src: url('/fonts/type_subset.ttf') format('truetype');
+  font-display: swap;
 }
 
-.typewriter .cursor {
-  font-weight: 400;
-  opacity: 1;
-  animation: cursor-blink 1s ease-in-out infinite;
-  margin-left: 1px;
-}
-
-.typewriter .cursor.cursor-hidden {
+.scifi-brand-v4 {
+  position: relative;
+  display: inline-block;
+  font-family: 'TypeFont', var(--serif);
+  color: #1a1a1a;
+  letter-spacing: 0;
+  font-weight: 700;
   opacity: 0;
-  animation: none;
+  background: linear-gradient(
+    180deg,
+    #1a1a1a 0%,
+    #3d3d3a 45%,
+    #262624 55%,
+    #1a1a1a 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  will-change: opacity, filter;
 }
 
-@keyframes cursor-blink {
-  0%, 45% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+.scifi-title-lockup {
+  display: inline-block;
+}
+
+.feature-copy-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1rem;
+  margin-bottom: 0.375rem;
+  user-select: none;
+}
+
+.feature-copy-divider-line {
+  width: 25%;
+  height: 1px;
+  border-radius: 999px;
+  background: rgba(204, 120, 92, 0.58);
+}
+
+.dark .feature-copy-divider-line {
+  background: rgba(212, 162, 127, 0.62);
+}
+
+.scifi-brand-v4.animate-start {
+  animation: scifi-organic-reveal 1.2s cubic-bezier(0.2, 0, 0, 1) 0.6s forwards;
+}
+
+.dark .scifi-brand-v4 {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #e9e6dc 45%,
+    #cbc9c2 55%,
+    #a0a0a0 100%
+  );
+  -webkit-background-clip: text;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.08);
+}
+
+@keyframes scifi-organic-reveal {
+  from {
+    opacity: 0;
+    filter: blur(15px) brightness(0);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+  }
 }
 </style>

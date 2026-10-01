@@ -18,6 +18,7 @@ const applyDarkMode = (value: boolean) => {
   }
 
   document.documentElement.classList.toggle('dark', value)
+  document.documentElement.style.colorScheme = value ? 'dark' : 'light'
 
   if (document.body) {
     document.body.setAttribute('theme-mode', value ? 'dark' : 'light')

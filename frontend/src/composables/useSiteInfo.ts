@@ -1,14 +1,10 @@
 import { readonly, ref, watch } from 'vue'
 import apiClient from '@/api/client'
+import { DEFAULT_SITE_INFO, normalizeSiteInfoValue } from '@/config/siteBrand'
 
 interface SiteInfo {
   site_name: string
   site_subtitle: string
-}
-
-const DEFAULT_SITE_INFO: SiteInfo = {
-  site_name: 'Aether',
-  site_subtitle: 'AI Gateway',
 }
 
 // 模块级缓存，所有组件共享同一份数据
@@ -17,17 +13,9 @@ const siteSubtitle = ref('')
 const loaded = ref(false)
 let fetchPromise: Promise<void> | null = null
 
-function normalizeSiteInfo(data: Partial<SiteInfo> | null | undefined): SiteInfo {
-  return {
-    site_name: data?.site_name?.trim() || DEFAULT_SITE_INFO.site_name,
-    site_subtitle: data?.site_subtitle?.trim() || DEFAULT_SITE_INFO.site_subtitle,
-  }
-}
-
 function applySiteInfo(data: Partial<SiteInfo> | null | undefined): void {
-  const normalized = normalizeSiteInfo(data)
-  siteName.value = normalized.site_name
-  siteSubtitle.value = normalized.site_subtitle
+  siteName.value = normalizeSiteInfoValue('siteName', data?.site_name ?? '')
+  siteSubtitle.value = normalizeSiteInfoValue('siteSubtitle', data?.site_subtitle ?? '')
 }
 
 async function fetchSiteInfo() {
@@ -35,9 +23,12 @@ async function fetchSiteInfo() {
     const response = await apiClient.get<SiteInfo>('/api/public/site-info')
     applySiteInfo(response.data)
   } catch {
-    // 加载失败时才使用 upstream 默认站点信息，避免配置加载前闪出默认品牌文案
+    // 请求失败后才使用 MMEXAB 默认站点信息，避免配置加载前暴露默认品牌文案。
     if (!siteName.value || !siteSubtitle.value) {
-      applySiteInfo(DEFAULT_SITE_INFO)
+      applySiteInfo({
+        site_name: DEFAULT_SITE_INFO.siteName,
+        site_subtitle: DEFAULT_SITE_INFO.siteSubtitle,
+      })
     }
     fetchPromise = null
   } finally {
