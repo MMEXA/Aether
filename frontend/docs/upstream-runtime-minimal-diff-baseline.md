@@ -13,9 +13,9 @@
 - 官方通用协议 PR：[fawney19/Aether #876](https://github.com/fawney19/Aether/pull/876)，中文书写；本地视觉定制不进入该 PR。
 - 14 项新增数据库迁移已经隔离库预演及正式执行，迁移记录由 54 增至 68，schema/backfills 均 ready；PostgreSQL 与 Redis 容器保持原 ID 和启动时间。
 - 正式浏览器验收：桌面和手机首页保留品牌、字体及视觉内容，无横向溢出；管理员登录与重载恢复会话成功，未在 localStorage/sessionStorage 保存 access_token。提供商页可见 GPT PRO，模型页可见两个目标模型，相关 API 和浏览器脚本错误为 0。
-- 通过正式全局模型、提供商模型和密钥限制 API，为 Codex 类型 GPT PRO 配置 `gpt-6-astra`、`gpt-6.1-sol`；自动发现继续开启，两模型同时进入 allowed/locked 列表，未修改模型列表处理器或直接写数据库。模型价格未配置，不代表官方免费。
+- 通过正式全局模型、提供商模型和密钥限制 API，为 Codex 类型 GPT PRO 配置 `gpt-6-astra`、`gpt-6.1-sol`；自动发现继续开启，两模型同时进入 allowed/locked 列表，未修改模型列表处理器或直接写数据库。后续已按用户要求配置官方 API 费率，并核对 GPT PRO 的 16 个启用模型：10 个文本模型价格已对齐，6 个原有自定义或无法准确表示的价格单独标明。新增两模型的 Standard/Priority 四笔真实记录均 settled，费用与 token 算式一致；全局默认价会同步影响继承它的提供商，局部覆盖保持优先。
 - 两模型 Responses 的 low/medium/high/xhigh/max 均成功完成；校验发行摘要后的官方 CLI 0.159.3 使用 low 和 ultra 均成功。ultra 是 CLI 本地多代理档位，现场普通请求实际为模型指定的 xhigh，原始 API 直接发送 ultra 会被上游 HTTP 400 拒绝并按重试策略最终返回 503。
-- 两模型各完成两轮 WebSocket generate=false 预热与 previous_response_id 续接；验证后 GPT PRO 的 WebSocket 开关恢复原来的 false。本次覆盖连接、元数据及续接，不等同于完整生成或所有重连场景。
+- 两模型各完成两轮 WebSocket generate=false 预热与 previous_response_id 续接；初次验收后恢复原来的 false，后续已按用户明确要求正式开启，当前 responses_websocket_enabled=true。本次协议验收覆盖连接、元数据及续接，不等同于完整生成或所有重连场景。
 
 ## 2026-08-31 历史记录
 
